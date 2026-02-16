@@ -1,0 +1,59 @@
+type User = 
+ record {
+   bio: opt text;
+   createdAt: Time;
+   "principal": principal;
+   profilePicture: opt text;
+   username: text;
+ };
+type Time = int;
+type Message = 
+ record {
+   content: text;
+   encrypted: bool;
+   id: text;
+   sender: principal;
+   timestamp: Time;
+ };
+type List = 
+ opt record {
+       Message;
+       List;
+     };
+type FileReference = 
+ record {
+   hash: text;
+   path: text;
+ };
+type Chat = 
+ record {
+   createdAt: Time;
+   id: text;
+   lastActivity: Time;
+   messages: List;
+   participants: vec principal;
+ };
+service : {
+  addGroupMember: (groupId: text, member: principal) -> ();
+  createChat: (participant: principal) -> (text);
+  createGroup: (name: text) -> (text);
+  deleteChatForEveryone: (chatId: text) -> ();
+  deleteChatForMe: (chatId: text) -> ();
+  deleteMessageForEveryone: (chatId: text, messageId: text) -> ();
+  deleteMessageForMe: (messageId: text) -> ();
+  dropFileReference: (path: text) -> ();
+  findExistingChat: (participant1: principal, participant2: principal) ->
+   (opt text) query;
+  getChatList: () -> (vec Chat) query;
+  getFileReference: (path: text) -> (FileReference) query;
+  getGroupMembers: (groupId: text) -> (vec principal) query;
+  getMessages: (chatId: text) -> (vec Message) query;
+  getUserByPrincipal: ("principal": principal) -> (opt User) query;
+  getUserByUsername: (username: text) -> (opt User) query;
+  listFileReferences: () -> (vec FileReference) query;
+  registerFileReference: (path: text, hash: text) -> ();
+  registerUser: (username: text) -> ();
+  sendMessage: (chatId: text, content: text) -> ();
+  updateBio: (bio: text) -> ();
+  updateProfilePicture: (path: text) -> ();
+}

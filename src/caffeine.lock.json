@@ -1,0 +1,12 @@
+{
+  "templates": {
+    "declaration_generator": "blob-10",
+    "build_template": "1.0.0"
+  },
+  "components": {
+    "blob-storage": "v1.1.2",
+    "camera": "v1.0.0",
+    "authorization": "v1.0.1"
+  },
+  "aiCoreVersion": "0.4.15"
+}

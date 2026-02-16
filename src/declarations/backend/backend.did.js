@@ -1,0 +1,63 @@
+export const idlFactory = ({ IDL }) => {
+  const List = IDL.Rec();
+  const Time = IDL.Int;
+  const Message = IDL.Record({
+    'id' : IDL.Text,
+    'content' : IDL.Text,
+    'sender' : IDL.Principal,
+    'encrypted' : IDL.Bool,
+    'timestamp' : Time,
+  });
+  List.fill(IDL.Opt(IDL.Tuple(Message, List)));
+  const Chat = IDL.Record({
+    'id' : IDL.Text,
+    'participants' : IDL.Vec(IDL.Principal),
+    'messages' : List,
+    'lastActivity' : Time,
+    'createdAt' : Time,
+  });
+  const FileReference = IDL.Record({ 'hash' : IDL.Text, 'path' : IDL.Text });
+  const User = IDL.Record({
+    'bio' : IDL.Opt(IDL.Text),
+    'principal' : IDL.Principal,
+    'username' : IDL.Text,
+    'createdAt' : Time,
+    'profilePicture' : IDL.Opt(IDL.Text),
+  });
+  return IDL.Service({
+    'addGroupMember' : IDL.Func([IDL.Text, IDL.Principal], [], []),
+    'createChat' : IDL.Func([IDL.Principal], [IDL.Text], []),
+    'createGroup' : IDL.Func([IDL.Text], [IDL.Text], []),
+    'deleteChatForEveryone' : IDL.Func([IDL.Text], [], []),
+    'deleteChatForMe' : IDL.Func([IDL.Text], [], []),
+    'deleteMessageForEveryone' : IDL.Func([IDL.Text, IDL.Text], [], []),
+    'deleteMessageForMe' : IDL.Func([IDL.Text], [], []),
+    'dropFileReference' : IDL.Func([IDL.Text], [], []),
+    'findExistingChat' : IDL.Func(
+        [IDL.Principal, IDL.Principal],
+        [IDL.Opt(IDL.Text)],
+        ['query'],
+      ),
+    'getChatList' : IDL.Func([], [IDL.Vec(Chat)], ['query']),
+    'getFileReference' : IDL.Func([IDL.Text], [FileReference], ['query']),
+    'getGroupMembers' : IDL.Func(
+        [IDL.Text],
+        [IDL.Vec(IDL.Principal)],
+        ['query'],
+      ),
+    'getMessages' : IDL.Func([IDL.Text], [IDL.Vec(Message)], ['query']),
+    'getUserByPrincipal' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(User)],
+        ['query'],
+      ),
+    'getUserByUsername' : IDL.Func([IDL.Text], [IDL.Opt(User)], ['query']),
+    'listFileReferences' : IDL.Func([], [IDL.Vec(FileReference)], ['query']),
+    'registerFileReference' : IDL.Func([IDL.Text, IDL.Text], [], []),
+    'registerUser' : IDL.Func([IDL.Text], [], []),
+    'sendMessage' : IDL.Func([IDL.Text, IDL.Text], [], []),
+    'updateBio' : IDL.Func([IDL.Text], [], []),
+    'updateProfilePicture' : IDL.Func([IDL.Text], [], []),
+  });
+};
+export const init = ({ IDL }) => { return []; };
